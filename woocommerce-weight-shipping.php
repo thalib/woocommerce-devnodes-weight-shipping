@@ -29,8 +29,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/FastShipWeight.php';
 add_action('woocommerce_shipping_init', 'fastship_shipping_method_weight');
 function fastship_shipping_method_weight()
 {
-
-    //add your shipping method to WooCommers list of Shipping methods
+    //add your shipping method to woocommerce list of Shipping methods
     add_filter('woocommerce_shipping_methods', 'add_shipping_method_fastship');
     function add_shipping_method_fastship($methods)
     {

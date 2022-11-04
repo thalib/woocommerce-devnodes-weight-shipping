@@ -106,8 +106,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
 
         $shipping_classes = WC()->shipping()->get_shipping_classes();
         if (!empty($shipping_classes)) {
-            //error_log('INFO: shipping_classes ' . print_r($shipping_classes, true));
-
+            
             $settings['class_costs'] = array(
                 'title' => __('Shipping class costs', 'fastship'),
                 'type' => 'title',
@@ -132,7 +131,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
             }
         }
 
-        //fileds for the modal form from the Zones window
+        //fields for the modal form from the Zones window
         $this->instance_form_fields = $settings;
     }
 
@@ -204,7 +203,9 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
             } //for
         } //if
 
-        return round($shipping_cost, 0, PHP_ROUND_HALF_UP);
+        //round to 10, -1 for fancy
+        $shipping_cost = ( intval($shipping_cost / 10) * 10 ) - 1;
+        return $shipping_cost;
     }
 
     public function calculate_shipping($package = array())
@@ -216,7 +217,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
         if ($cart_weight >= $this->min_weight && $cart_weight <= $this->max_weight) {
 
             $method_title = $this->get_option('title');
-            $label = $method_title . ' (' . $weight_kg . 'Kg)';
+            $label = $method_title . ' (Discounted_Rate_' . $weight_kg . 'Kg)';
 
             $cost = $this->fastship_get_shipping_cost($package, $this->cost, $weight_kg);
 
@@ -230,6 +231,8 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
                 'calc_tax' => 'per_order',
                 'taxes' => $tax_status,
             );
+
+            //error_log('thalib: rate ' . print_r($rate, true));
 
             if ($cost) {
                 $this->add_rate($rate);
