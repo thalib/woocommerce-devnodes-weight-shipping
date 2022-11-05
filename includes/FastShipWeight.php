@@ -50,6 +50,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
         $this->max_weight = $this->get_option('max_weight');
         $this->tax_status = $this->get_option('tax_status');
         $this->cost = $this->get_option('cost');
+        $this->cost_min = $this->get_option('cost_min');
         $this->round_weight = $this->get_option('round_weight');
 
         $name = $this->get_option('title');
@@ -76,7 +77,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
             'max_weight' => array(
                 'title' => __('Weight Max (Kg)', 'fastship'),
                 'type' => 'number',
-                'default' => 5,
+                'default' => 10,
             ),
             'round_weight' => array(
                 'title' => __('Round weight (in grams)', 'fastship'),
@@ -88,7 +89,14 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
             'cost' => array(
                 'title' => __('Shipping Rate (per Kg)', 'fastship'),
                 'type' => 'number',
-                'default' => 130,
+                'default' => 80,
+            ),
+            'cost_min' => array(
+                'title' => __('Minimum Shipping Fee', 'fastship'),
+                'type' => 'number',
+                'description' => __('Incase the calculated shipping fees is too low, you may want to charge minimum shipping fee.', 'fastship'),
+                'desc_tip' => true,
+                'default' => 39,
             ),
             'tax_status' => array(
                 'title' => __('Tax status', 'fastship'),
@@ -220,6 +228,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
             $label = $method_title . ' (Discounted_Rate_' . $weight_kg . 'Kg)';
 
             $cost = $this->fastship_get_shipping_cost($package, $this->cost, $weight_kg);
+            $cost = ($cost < $this->cost_min)? $this->cost_min : $cost;
 
             $tax_status = ($this->tax_status == 'none') ? false : '';
 
@@ -232,7 +241,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
                 'taxes' => $tax_status,
             );
 
-            //error_log('thalib: rate ' . print_r($rate, true));
+            //error_log('thalib: cost ' . print_r($cost, true));
 
             if ($cost) {
                 $this->add_rate($rate);
