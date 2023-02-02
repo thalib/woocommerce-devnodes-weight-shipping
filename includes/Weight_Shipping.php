@@ -17,14 +17,14 @@ if (!class_exists('WC_Shipping_Method')) {
     require_once WP_PLUGIN_DIR . '/woocommerce/includes/abstracts/abstract-wc-shipping-method.php';
 }
 
-class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
+class WC_Shipping_Method_Devnodes_Weight extends WC_Shipping_Method
 {
     public function __construct($instance_id = 0)
     {
-        $this->id = 'fastship_weight'; //this is the id of our shipping method
+        $this->id = 'devnodes_weight'; //this is the id of our shipping method
         $this->instance_id = absint($instance_id);
-        $this->method_title = __('Fastship Weight Shipping', 'fastship');
-        $this->method_description = __('Lets you charge a weight based charge for shipping.', 'fastship');
+        $this->method_title = __('Weight Shipping by Devnodes.in', 'devnodes');
+        $this->method_description = __('Lets you charge a weight based charge for shipping.', 'devnodes');
         //add to shipping zones list
         $this->supports = array(
             'shipping-zones',
@@ -63,51 +63,51 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
 
         $settings = array(
             'title' => array(
-                'title' => __('Method Title', 'fastship'),
+                'title' => __('Method Title', 'devnodes'),
                 'type' => 'text',
-                'description' => __('User sees this title during checkout.', 'fastship'),
+                'description' => __('User sees this title during checkout.', 'devnodes'),
                 'desc_tip' => true,
-                'default' => __('Standard Surface', 'fastship'),
+                'default' => __('Standard Surface', 'devnodes'),
             ),
             'min_weight' => array(
-                'title' => __('Weight Min (Kg)', 'fastship'),
+                'title' => __('Weight Min (Kg)', 'devnodes'),
                 'type' => 'number',
                 'default' => 0,
             ),
             'max_weight' => array(
-                'title' => __('Weight Max (Kg)', 'fastship'),
+                'title' => __('Weight Max (Kg)', 'devnodes'),
                 'type' => 'number',
                 'default' => 10,
             ),
             'round_weight' => array(
-                'title' => __('Round weight (in grams)', 'fastship'),
+                'title' => __('Round weight (in grams)', 'devnodes'),
                 'type' => 'number',
-                'description' => __('Round UP weight to nearest (in gram)<br> In India the logistics service charge in 500g or 200g slab', 'fastship'),
+                'description' => __('Round UP weight to nearest (in gram)<br> In India the logistics service charge in 500g or 200g slab', 'devnodes'),
                 'desc_tip' => true,
                 'default' => 500,
             ),
             'cost' => array(
-                'title' => __('Shipping Rate (per Kg)', 'fastship'),
+                'title' => __('Shipping Rate (per Kg)', 'devnodes'),
                 'type' => 'number',
                 'default' => 80,
             ),
             'cost_min' => array(
-                'title' => __('Minimum Shipping Fee', 'fastship'),
+                'title' => __('Minimum Shipping Fee', 'devnodes'),
                 'type' => 'number',
-                'description' => __('Incase the calculated shipping fees is too low, you may want to charge minimum shipping fee.', 'fastship'),
+                'description' => __('Incase the calculated shipping fees is too low, you may want to charge minimum shipping fee.', 'devnodes'),
                 'desc_tip' => true,
                 'default' => 39,
             ),
             'tax_status' => array(
-                'title' => __('Tax status', 'fastship'),
+                'title' => __('Tax status', 'devnodes'),
                 'type' => 'select',
                 'class' => 'wc-enhanced-select',
                 'default' => 'none',
                 'options' => array(
-                    'taxable' => __('Taxable', 'fastship'),
-                    'none' => __('None', 'fastship'),
+                    'taxable' => __('Taxable', 'devnodes'),
+                    'none' => __('None', 'devnodes'),
                 ),
-                'description' => __('Apply tax on shipping fee', 'fastship'),
+                'description' => __('Apply tax on shipping fee', 'devnodes'),
                 'desc_tip' => true,
             ),
         );
@@ -116,10 +116,10 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
         if (!empty($shipping_classes)) {
             
             $settings['class_costs'] = array(
-                'title' => __('Shipping class costs', 'fastship'),
+                'title' => __('Shipping class costs', 'devnodes'),
                 'type' => 'title',
                 'default' => '',
-                'description' => __('Set special rate for each shipping class', 'fastship'),
+                'description' => __('Set special rate for each shipping class', 'devnodes'),
             );
 
             foreach ($shipping_classes as $shipping_class) {
@@ -129,11 +129,11 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
 
                 $settings['class_cost_' . $shipping_class->term_id] = array(
                     /* translators: %s: shipping class name */
-                    'title' => sprintf(__('"%s" (rate per Kg)', 'fastship'), esc_html($shipping_class->name)),
+                    'title' => sprintf(__('"%s" (rate per Kg)', 'devnodes'), esc_html($shipping_class->name)),
                     'type' => 'number',
-                    'description' => __('0 to disable this class', 'fastship'),
+                    'description' => __('0 to disable this class', 'devnodes'),
                     'desc_tip' => true,
-                    'placeholder' => __('N/A', 'fastship'),
+                    'placeholder' => __('N/A', 'devnodes'),
                     'default' => 0,
                 );
             }
@@ -143,7 +143,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
         $this->instance_form_fields = $settings;
     }
 
-    public function fastship_get_class_weight($package)
+    public function devnodes_get_class_weight($package)
     {
         $class_weight = array();
         $class_weight['no_class'] = 0;
@@ -179,7 +179,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
         return $weight_kg / 1000; //convert back to kg
     }
 
-    public function fastship_get_shipping_cost($package, $default_rate, $cart_weight)
+    public function devnodes_get_shipping_cost($package, $default_rate, $cart_weight)
     {
         $shipping_cost = 0;
 
@@ -189,7 +189,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
             $shipping_cost = $default_rate * $cart_weight;
         } else {
 
-            $class_weight = $this->fastship_get_class_weight($package);
+            $class_weight = $this->devnodes_get_class_weight($package);
 
             //Add no_class products shipping cost, round weight to 100 grams
             $shipping_cost = $default_rate * $this->get_round_weight($class_weight['no_class'], 100);
@@ -227,7 +227,7 @@ class WC_Shipping_Method_Fastship_Weight extends WC_Shipping_Method
             $method_title = $this->get_option('title');
             $label = $method_title . ' (Discounted_Rate_' . $weight_kg . 'Kg)';
 
-            $cost = $this->fastship_get_shipping_cost($package, $this->cost, $weight_kg);
+            $cost = $this->devnodes_get_shipping_cost($package, $this->cost, $weight_kg);
             $cost = ($cost < $this->cost_min)? $this->cost_min : $cost;
 
             $tax_status = ($this->tax_status == 'none') ? false : '';
